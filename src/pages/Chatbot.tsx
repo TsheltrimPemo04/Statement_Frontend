@@ -1,31 +1,42 @@
+// pages/chatbot.tsx (or app/chatbot/page.tsx)
 import { useState } from "react";
 import FolderSidebar from "../components/FolderSidebar";
 import ChatHistory from "../components/ChatHistory";
 import ChatArea from "../components/ChatArea";
 
 export default function Chatbot() {
-  const [resetKey, setResetKey] = useState(0);
+  // If you have a fixed top bar, set its pixel height here.
+  const HEADER_H = 56;
 
-  // Triggered when user clicks "New Chat" in ChatHistory
-  const handleNewChat = () => {
-    setResetKey((prev) => prev + 1);
-  };
+  const [resetKey, setResetKey] = useState(0);
+  const handleNewChat = () => setResetKey((p) => p + 1);
 
   return (
-    <div className="flex w-full h-screen bg-[#F9FAFB] overflow-hidden">
-      {/* Left Folder Sidebar */}
-      <div className="w-[25%] border-r border-gray-200 bg-white overflow-y-auto">
-        <FolderSidebar />
-      </div>
+    <div
+      className="w-full bg-[#F6F7F9]"
+      style={{ height: `calc(100dvh - ${HEADER_H}px)` }}
+    >
+      <div className="grid h-full grid-cols-[320px_300px_1fr] gap-0 overflow-hidden">
+        {/* Left: Folder tree */}
+        <aside className="min-h-0 bg-white border-r border-gray-200 overflow-hidden">
+          <div className="h-full min-h-0 overflow-y-auto">
+            <FolderSidebar />
+          </div>
+        </aside>
 
-      {/* Middle Chat History */}
-      <div className="w-[20%] border-gray-200 bg-[#F9FAFB]">
-        <ChatHistory onNewChat={handleNewChat} />
-      </div>
+        {/* Middle: Chat history (menu needs to overflow & sit above chat area) */}
+        <aside className="relative z-20 min-h-0 border-r border-gray-200 bg-white overflow-visible">
+          <div className="h-full min-h-0">
+            <ChatHistory onNewChat={handleNewChat} />
+          </div>
+        </aside>
 
-      {/* Right Chat Area */}
-      <div className="flex-1">
-        <ChatArea resetKey={resetKey} />
+        {/* Right: Chat area */}
+        <main className="relative z-10 min-w-0 min-h-0 overflow-hidden bg-[#F9FAFB]">
+          <div className="h-full min-h-0">
+            <ChatArea resetKey={resetKey} />
+          </div>
+        </main>
       </div>
     </div>
   );
